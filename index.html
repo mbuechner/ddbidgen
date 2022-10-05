@@ -12,7 +12,7 @@
     <!-- Favicons -->
     <link href="images/favicon.ico" rel="icon">
     <meta content="#7952b3" name="theme-color">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" rel="stylesheet">
     <script crossorigin="anonymous" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <script crossorigin="anonymous" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
     <script crossorigin="anonymous" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"></script>
@@ -27,6 +27,7 @@
                 var base32 = sha1.toString(CryptoJS.enc.Base32);
                 $('#provider-id').fadeIn(0).html(pid.toString());
                 $('#provider-item-id').fadeIn(0).html(piid.toString());
+                $('#ddbIdInput').val(base32.toString());
                 $('#sha1a, #sha1b').fadeIn(0).html(sha1.toString());
                 if ($('#provider-id').text() == "www_fiz-karlsruhe_de") {
                     $('#base32').fadeIn(0).html('<a href="https://www.deutsche-digitale-bibliothek.de/organization/' + base32.toString() + '" target="_blank">' + base32.toString() + '</a>');
@@ -78,7 +79,7 @@
       <div class="container py-4">
         <header class="pb-3 mb-4 border-bottom">
           <a class="d-flex align-items-center text-dark text-decoration-none" href="/">
-            <img alt="DDBpro logo" src="images/logo-ddbpro-RGB.webp" width="220" />
+            <img alt="DDBpro logo" src="images/logo-ddbpro-RGB-grey.webp" width="220" />
             <!-- <span class="fs-4">Text</span> -->
           </a>
         </header>
@@ -86,24 +87,30 @@
           <div class="container-fluid py-5">
             <h1 class="display-5 fw-bold">DDB-ID-Generator</h1>
             <p class="col-md-8 fs-4"> 
-            <div class="input-group flex-nowrap mb-3">
-              <span class="input-group-text" id="provIdInputLabel" style="min-width:150px;">provider-id</span>
-              <input aria-describedby="provIdInputLabel" aria-label="Username" class="form-control" id="provIdInput" placeholder="00012008" type="text">
+            <div class="input-group mb-3">
+              <span class="input-group-text col col-md-3 mx-auto" id="provIdInputLabel" style="min-width:150px;">provider-id</span>
+              <input aria-describedby="provIdInputLabel" class="form-control" id="provIdInput" placeholder="00012008" style="min-width:150px;" type="text">
             </div>
-            <div class="input-group flex-nowrap mb-3">
-              <span class="input-group-text" id="provItemIdInputLabel" style="min-width:150px;">provider-item-id</span>
-              <input aria-describedby="provItemIdInputLabel" aria-label="Username" class="form-control" id="provItemIdInput" placeholder="1000071596" type="text">
+            <div class="input-group mb-3">
+              <span class="input-group-text col col-md-3 mx-auto" id="provItemIdInputLabel" style="min-width:150px;">provider-item-id</span>
+              <input aria-describedby="provItemIdInputLabel" class="form-control" id="provItemIdInput" placeholder="1000071596" style="min-width:150px;" type="text">
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text col col-md-3 mx-auto" id="ddbIdInputLabel" style="min-width:150px;">DDB-ID</span>
+              <input aria-describedby="ddbIdInputLabel" class="form-control" id="ddbIdInput" placeholder="IDEYVAM52SZTJUSL347PX6JUIFR545ZD" style="min-width:150px;" type="text" readonly>
             </div>
             <div aria-label="Example buttons" class="btn-group mb-5" role="group">
               <button class="btn btn-primary" id="bspBtn01" type="button">Beispiel 1</button>
               <button class="btn btn-primary" id="bspBtn02" type="button">Beispiel 2</button>
             </div>
-            <p class="h5 mb-3 text-break">
-              <span data-placement="left" data-toggle="tooltip" style="cursor:help;" title="SHA1 ist eine kryptologische Hashfunktion, die der Berechnung eines eindeutigen Prüfwerts für beliebige digitale Daten dient.">SHA1(</span>“<span class="text-light bg-dark" id="provider-id" style="margin-right:1px;">00012008</span><span class="text-light bg-dark" id="provider-item-id">1000071596</span>”<strong>)</strong> = [<span class="text-secondary" id="sha1a">40c98a819dd4b334d24bdf3efbf9344163de7723</span>]<sub>16</sub>
-            </p>
-            <p class="h5 text-break">
-              <span data-placement="left" data-toggle="tooltip" style="cursor:help;" title="Base32 ist ein Verfahren zur Kodierung von Binärdaten in eine Zeichenfolge, die nur aus 32 verschiedenen ASCII-Zeichen (Großbuchstaben und Ziffern) besteht.">BASE32(</span>[<span class="text-secondary" id="sha1b">40c98a819dd4b334d24bdf3efbf9344163de7723</span><strong>]<sub>16</sub>)</strong> = <span id="base32"><a href="https://www.deutsche-digitale-bibliothek.de/item/IDEYVAM52SZTJUSL347PX6JUIFR545ZD" target="_blank">IDEYVAM52SZTJUSL347PX6JUIFR545ZD</a></span>
-            </p>
+            <div class="text-nowrap overflow-auto">
+              <p class="h5 mb-3 text-break">
+                <span data-placement="left" data-toggle="tooltip" style="cursor:help;" title="SHA1 ist eine kryptologische Hashfunktion, die der Berechnung eines eindeutigen Prüfwerts für beliebige digitale Daten dient.">SHA1(</span>“<kbd id="provider-id">00012008</kbd><kbd id="provider-item-id">1000071596</kbd>”<strong>)</strong> = [<span class="text-secondary" id="sha1a">40c98a819dd4b334d24bdf3efbf9344163de7723</span>]<sub>16</sub>
+              </p>
+              <p class="h5 text-break">
+                <span data-placement="left" data-toggle="tooltip" style="cursor:help;" title="Base32 ist ein Verfahren zur Kodierung von Binärdaten in eine Zeichenfolge, die nur aus 32 verschiedenen ASCII-Zeichen (Großbuchstaben und Ziffern) besteht.">BASE32(</span>[<span class="text-secondary" id="sha1b">40c98a819dd4b334d24bdf3efbf9344163de7723</span><strong>]<sub>16</sub>)</strong> = <span id="base32"><a href="https://www.deutsche-digitale-bibliothek.de/item/IDEYVAM52SZTJUSL347PX6JUIFR545ZD" target="_blank">IDEYVAM52SZTJUSL347PX6JUIFR545ZD</a></span>
+              </p>
+            </div>
           </div>
           <hr />
           <div class="accordion accordion-flush" id="accordion">
@@ -117,13 +124,13 @@
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="massinput"> provider-id|provider-item-id </label>
-                        <textarea class="form-control" id="massinput" rows="10" style="font-family:monospace;white-space:pre;overflow-wrap:normal;overflow-x:scroll;">000120081000071596&#13;www_fiz-karlsruhe_de99900374</textarea>
+                        <textarea class="form-control mb-3" id="massinput" rows="10" style="font-family:monospace;white-space:pre;overflow-wrap:normal;overflow-x:scroll;">000120081000071596&#13;www_fiz-karlsruhe_de99900374</textarea>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="massoutput">DDB-ID</label>
-                        <textarea class="form-control" id="massoutput" readonly="readonly" rows="10" style="font-family:monospace;white-space:pre;overflow-wrap:normal;overflow-x:scroll;"></textarea>
+                        <textarea class="form-control mb-3" id="massoutput" readonly="readonly" rows="10" style="font-family:monospace;white-space:pre;overflow-wrap:normal;overflow-x:scroll;"></textarea>
                       </div>
                     </div>
                     <div class="col-md-12 mt-3">
@@ -135,7 +142,9 @@
             </div>
           </div>
         </div>
-        <footer class="pt-3 mt-4 text-muted border-top float-end"><i class="bi bi-github"></i> <a href="https://github.com/mbuechner/ddbidgen/" target="_blank">GitHub</a>
+        <footer class="pt-3 text-muted float-end">
+          <i class="bi bi-github"></i>
+          <a href="https://github.com/mbuechner/ddbidgen/" target="_blank">GitHub</a>
         </footer>
       </div>
     </main>
