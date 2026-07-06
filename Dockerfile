@@ -10,6 +10,11 @@ WORKDIR /srv
 COPY . /srv
 COPY Caddyfile /etc/caddy/Caddyfile
 
+# OpenShift with allowPrivilegeEscalation=false can deny exec when binaries carry file capabilities.
+RUN apk add --no-cache libcap \
+	&& setcap -r /usr/bin/caddy \
+	&& apk del libcap
+
 # Keep files readable for arbitrary OpenShift runtime UIDs.
 RUN chmod -R g=u /srv /etc/caddy
 

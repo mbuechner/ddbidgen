@@ -84,6 +84,15 @@ Deployment-Beispiel:
 oc apply -f openshift/k8s.yaml
 ```
 
+### Troubleshooting: exec /usr/bin/caddy: operation not permitted
+
+Wenn OpenShift beim Containerstart mit dieser Meldung abbricht, ist oft die Ursache:
+
+- `allowPrivilegeEscalation: false` ist aktiv.
+- Die Binary `/usr/bin/caddy` enthaelt File-Capabilities.
+
+In diesem Repository wird das im Docker-Build bereinigt (`setcap -r /usr/bin/caddy`), damit der Start unter restriktiven Security Contexts funktioniert.
+
 ## Empfehlung für Ressourcen
 
 Für diese statische App sind folgende Startwerte praxistauglich:
