@@ -1,0 +1,33 @@
+{
+	admin off
+}
+
+:8080 {
+	root * {$APP_ROOT:/srv}
+
+	# Lightweight health endpoint for Kubernetes/OpenShift probes.
+	respond /healthz 200
+
+	# Serve app below a configurable subpath.
+	@subpath path {$APP_BASE_PATH:/app/ddbidgen} {$APP_BASE_PATH:/app/ddbidgen}/*
+	handle @subpath {
+		uri strip_prefix {$APP_BASE_PATH:/app/ddbidgen}
+		try_files {path} /index.html
+		file_server
+	}
+
+	# Cache immutable static assets aggressively.
+	@staticAssets {
+		path *.js *.css *.png *.jpg *.jpeg *.gif *.svg *.webp *.ico
+	}
+	header @staticAssets Cache-Control "public, max-age=31536000, immutable"
+
+	# HTML should be revalidated so rollouts are visible quickly.
+	@html {
+		path *.html /
+	}
+	header @html Cache-Control "no-cache"
+
+	encode zstd gzip
+	file_server
+}

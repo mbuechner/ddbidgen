@@ -13,73 +13,93 @@
     <link href="images/favicon.ico" rel="icon">
     <meta content="#7952b3" name="theme-color">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" rel="stylesheet">
-    <script crossorigin="anonymous" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-    <script crossorigin="anonymous" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
-    <script crossorigin="anonymous" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"></script>
-    <script src="js/sha1.js"></script>
-    <script src="js/enc-base32.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="js/sha1.js" defer></script>
+    <script src="js/enc-base32.js" defer></script>
     <script>
             //<![CDATA[
             function ddbId() {
-                var pid = $('#provIdInput').val() ? $('#provIdInput').val(): $('#provIdInput').attr('placeholder');
-                var piid = $('#provItemIdInput').val() ? $('#provItemIdInput').val(): $('#provItemIdInput').attr('placeholder');
+          var provIdInput = document.getElementById('provIdInput');
+          var provItemIdInput = document.getElementById('provItemIdInput');
+          var pid = provIdInput.value ? provIdInput.value : provIdInput.placeholder;
+          var piid = provItemIdInput.value ? provItemIdInput.value : provItemIdInput.placeholder;
                 var sha1 = CryptoJS.SHA1(pid + piid);
                 var base32 = sha1.toString(CryptoJS.enc.Base32);
-                $('#provider-id').fadeIn(0).html(pid.toString());
-                $('#provider-item-id').fadeIn(0).html(piid.toString());
-                $('#ddbIdInput').val(base32.toString());
-                $('#sha1a, #sha1b').fadeIn(0).html(sha1.toString());
-                if ($('#provider-id').text() == "www_fiz-karlsruhe_de") {
-                    $('#base32').fadeIn(0).html('<a href="https://www.deutsche-digitale-bibliothek.de/organization/' + base32.toString() + '" target="_blank">' + base32.toString() + '</a>');
+          var ddbId = base32.toString();
+          var sha1Value = sha1.toString();
+          document.getElementById('provider-id').textContent = pid.toString();
+          document.getElementById('provider-item-id').textContent = piid.toString();
+          document.getElementById('ddbIdInput').value = ddbId;
+          document.getElementById('sha1a').textContent = sha1Value;
+          document.getElementById('sha1b').textContent = sha1Value;
+          var base32Container = document.getElementById('base32');
+          if (pid === "www_fiz-karlsruhe_de") {
+            base32Container.innerHTML = '<a href="https://www.deutsche-digitale-bibliothek.de/organization/' + ddbId + '" target="_blank" rel="noopener noreferrer">' + ddbId + '</a>';
                 } else {
-                    $('#base32').fadeIn(0).html('<a href="https://www.deutsche-digitale-bibliothek.de/item/' + base32.toString() + '" target="_blank">' + base32.toString() + '</a>');
+            base32Container.innerHTML = '<a href="https://www.deutsche-digitale-bibliothek.de/item/' + ddbId + '" target="_blank" rel="noopener noreferrer">' + ddbId + '</a>';
                 }
             }
-            $(document).ready(function () {
-                $('#bspBtn01').bind('click', function () {
-                    $('#provIdInput').val("00012008");
-                    $('#provItemIdInput').val("1000071596");
+        document.addEventListener('DOMContentLoaded', function () {
+          var provIdInput = document.getElementById('provIdInput');
+          var provItemIdInput = document.getElementById('provItemIdInput');
+          var ddbIdInput = document.getElementById('ddbIdInput');
+          var massInput = document.getElementById('massinput');
+          var massOutput = document.getElementById('massoutput');
+
+          document.getElementById('bspBtn01').addEventListener('click', function () {
+            provIdInput.value = "00012008";
+            provItemIdInput.value = "1000071596";
                     ddbId();
                 });
-                $('#massinput').scroll(function () {
-                    var length = $(this).scrollTop();
-                    $('#massoutput').scrollTop(length);
+
+          massInput.addEventListener('scroll', function () {
+            massOutput.scrollTop = massInput.scrollTop;
                 });
-                $('#massoutput').scroll(function () {
-                    var length = $(this).scrollTop();
-                    $('#massinput').scrollTop(length);
+
+          massOutput.addEventListener('scroll', function () {
+            massInput.scrollTop = massOutput.scrollTop;
                 });
-                $('#bspBtn02').bind('click', function () {
-                    $('#provIdInput').val("www_fiz-karlsruhe_de");
-                    $('#provItemIdInput').val("99900374");
+
+          document.getElementById('bspBtn02').addEventListener('click', function () {
+            provIdInput.value = "www_fiz-karlsruhe_de";
+            provItemIdInput.value = "99900374";
                     ddbId();
                 });
-                $('#calcBtn').bind('click', function () {
-                    $('#massoutput').text("");
-                    var lines = $('#massinput').val().split('\n');
+
+          document.getElementById('calcBtn').addEventListener('click', function () {
+            massOutput.value = "";
+            var lines = massInput.value.split('\n');
                     for (var i = 0; i < lines.length; i++) {
                         var sha1 = CryptoJS.SHA1(lines[i].replace('\t', ''));
                         var base32 = sha1.toString(CryptoJS.enc.Base32);
-                        $('#massoutput').append(base32.toString() + "&#13;");
+              massOutput.value += base32.toString() + "\n";
                     }
-                    var length = $('#massinput').scrollTop();
-                    $('#massoutput').scrollTop(length);
+            massOutput.scrollTop = massInput.scrollTop;
                 });
-                $('#provItemIdInput, #provIdInput').bind('input', function () {
-                    ddbId();
-                });
-                ddbId();
-                $(function () {
-                    $('[data-toggle="tooltip"]').tooltip()
-                })
-            });//]]></script>
+
+          provItemIdInput.addEventListener('input', ddbId);
+          provIdInput.addEventListener('input', ddbId);
+
+          ddbIdInput.addEventListener('focus', function () {
+            ddbIdInput.select();
+          });
+
+          var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+          if (window.bootstrap && window.bootstrap.Tooltip) {
+            for (var i = 0; i < tooltipTriggerList.length; i++) {
+              new bootstrap.Tooltip(tooltipTriggerList[i]);
+            }
+          }
+
+          ddbId();
+        });//]]></script>
   </head>
   <body>
     <main>
       <div class="container py-4">
         <header class="pb-3 mb-4 border-bottom">
-          <a class="d-flex align-items-center text-dark text-decoration-none" href="/">
-            <img alt="DDBpro logo" src="images/logo-ddbpro-RGB-grey.webp" width="220" />
+          <a class="d-flex align-items-center text-dark text-decoration-none" href=".">
+            <img alt="DDBpro logo" src="images/logo-ddbpro-RGB-grey.webp" width="220">
             <!-- <span class="fs-4">Text</span> -->
           </a>
         </header>
@@ -105,14 +125,14 @@
             </div>
             <div class="text-nowrap overflow-auto">
               <p class="h5 mb-3 text-break">
-                <span data-placement="left" data-toggle="tooltip" style="cursor:help;" title="SHA1 ist eine kryptologische Hashfunktion, die der Berechnung eines eindeutigen Prüfwerts für beliebige digitale Daten dient.">SHA1(</span>“<kbd id="provider-id">00012008</kbd><kbd id="provider-item-id">1000071596</kbd>”<strong>)</strong> = [<span class="text-secondary" id="sha1a">40c98a819dd4b334d24bdf3efbf9344163de7723</span>]<sub>16</sub>
+                <span data-bs-placement="left" data-bs-toggle="tooltip" style="cursor:help;" title="SHA1 ist eine kryptologische Hashfunktion, die der Berechnung eines eindeutigen Prüfwerts für beliebige digitale Daten dient.">SHA1(</span>“<kbd id="provider-id">00012008</kbd><kbd id="provider-item-id">1000071596</kbd>”<strong>)</strong> = [<span class="text-secondary" id="sha1a">40c98a819dd4b334d24bdf3efbf9344163de7723</span>]<sub>16</sub>
               </p>
               <p class="h5 text-break">
-                <span data-placement="left" data-toggle="tooltip" style="cursor:help;" title="Base32 ist ein Verfahren zur Kodierung von Binärdaten in eine Zeichenfolge, die nur aus 32 verschiedenen ASCII-Zeichen (Großbuchstaben und Ziffern) besteht.">BASE32(</span>[<span class="text-secondary" id="sha1b">40c98a819dd4b334d24bdf3efbf9344163de7723</span><strong>]<sub>16</sub>)</strong> = <span id="base32"><a href="https://www.deutsche-digitale-bibliothek.de/item/IDEYVAM52SZTJUSL347PX6JUIFR545ZD" target="_blank">IDEYVAM52SZTJUSL347PX6JUIFR545ZD</a></span>
+                <span data-bs-placement="left" data-bs-toggle="tooltip" style="cursor:help;" title="Base32 ist ein Verfahren zur Kodierung von Binärdaten in eine Zeichenfolge, die nur aus 32 verschiedenen ASCII-Zeichen (Großbuchstaben und Ziffern) besteht.">BASE32(</span>[<span class="text-secondary" id="sha1b">40c98a819dd4b334d24bdf3efbf9344163de7723</span><strong>]<sub>16</sub>)</strong> = <span id="base32"><a href="https://www.deutsche-digitale-bibliothek.de/item/IDEYVAM52SZTJUSL347PX6JUIFR545ZD" target="_blank" rel="noopener noreferrer">IDEYVAM52SZTJUSL347PX6JUIFR545ZD</a></span>
               </p>
             </div>
           </div>
-          <hr />
+          <hr>
           <div class="accordion accordion-flush" id="accordion">
             <div class="accordion-item">
               <h2 class="accordion-header" id="flush-headingOne">
@@ -124,7 +144,8 @@
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="massinput"> provider-id|provider-item-id </label>
-                        <textarea class="form-control mb-3" id="massinput" rows="10" style="font-family:monospace;white-space:pre;overflow-wrap:normal;overflow-x:scroll;">000120081000071596&#13;www_fiz-karlsruhe_de99900374</textarea>
+                        <textarea class="form-control mb-3" id="massinput" rows="10" style="font-family:monospace;white-space:pre;overflow-wrap:normal;overflow-x:scroll;">000120081000071596
+www_fiz-karlsruhe_de99900374</textarea>
                       </div>
                     </div>
                     <div class="col-md-6">
@@ -144,7 +165,7 @@
         </div>
         <footer class="pt-3 text-muted float-end">
           <i class="bi bi-github"></i>
-          <a href="https://github.com/mbuechner/ddbidgen/" target="_blank">GitHub</a>
+          <a href="https://github.com/mbuechner/ddbidgen/" target="_blank" rel="noopener noreferrer">GitHub</a>
         </footer>
       </div>
     </main>
